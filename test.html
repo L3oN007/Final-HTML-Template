@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Camera Access Example</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				background-color: #f2f2f2;
+				padding: 20px;
+				text-align: center;
+			}
+
+			h1 {
+				color: #333;
+				margin-bottom: 30px;
+			}
+
+			#toggleButton {
+				padding: 10px 20px;
+				font-size: 18px;
+				background-color: #2ecc71;
+				color: #fff;
+				border: none;
+				cursor: pointer;
+				transition: background-color 0.3s ease;
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+			}
+
+			#toggleButton:hover {
+				background-color: #27ae60;
+			}
+
+			#video {
+				width: 100%;
+				max-width: 600px;
+				margin: 30px auto;
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+				border-radius: 5px;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Camera Access Example</h1>
+		<button id="toggleButton">Turn Camera On</button>
+		<video id="video" autoplay></video>
+
+		<script>
+			var stream; // Store the camera stream reference
+
+			function startCamera() {
+				navigator.mediaDevices
+					.getUserMedia({ video: true })
+					.then(function (mediaStream) {
+						var videoElement = document.getElementById('video');
+						videoElement.srcObject = mediaStream;
+						stream = mediaStream;
+						document.getElementById('toggleButton').textContent = 'Turn Camera Off';
+					})
+					.catch(function (error) {
+						console.log('Error accessing camera:', error);
+					});
+			}
+
+			function stopCamera() {
+				if (stream) {
+					stream.getTracks().forEach(function (track) {
+						track.stop();
+					});
+					stream = null;
+					document.getElementById('toggleButton').textContent = 'Turn Camera On';
+				}
+			}
+
+			document.getElementById('toggleButton').addEventListener('click', function () {
+				if (stream) {
+					stopCamera();
+				} else {
+					startCamera();
+				}
+			});
+		</script>
+	</body>
+</html>
